@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { RecipeLayer } from '../types/recipe';
+import IngredientRow from '../components/IngredientRow';
 
 export default function RecipeBuilder(){
     const [recipeName, setRecipeName] = useState("");
@@ -28,6 +29,55 @@ export default function RecipeBuilder(){
         ));
     };
 
+    const handleAddIngredient = (layerId: string)=>{
+        setLayers(layers.map((layer) => 
+
+            layer.id === layerId ? 
+                { ...layer, 
+                        ingredients: [...layer.ingredients, 
+                            {
+                                id: crypto.randomUUID(),
+                                name: "",
+                                quantity: 0,
+                                unit: "g"
+                            }
+                        ] } 
+                : 
+                layer
+        ));
+    }
+    const handleUpdateIngredient = (layerId: string, ingredientId: string, field: string, value: string | number)=>{
+        setLayers(layers.map((layer) => 
+
+            layer.id === layerId ? 
+                { ...layer, 
+                    ingredients: layer.ingredients.map((ingredient)=>
+                            ingredient.id===ingredientId ?
+                               {...ingredient, [field]: value}
+                                :
+                                ingredient
+                        )
+                } 
+                : 
+                layer
+        ));
+    }
+
+    const handleDeleteIngredient = ( layerId: string, ingredientId: string) => {
+        
+        setLayers(layers.map((layer) => 
+
+            layer.id === layerId ? 
+                { ...layer, 
+                    ingredients: layer.ingredients.filter((ingredient)=>
+                            ingredient.id!==ingredientId
+                        )
+                } 
+                : 
+                layer
+        ));
+    }
+
     return(
         <div className=" max-w-3xl mx-auto bg-amber-200 rounded-3xl shadow-lg border border-stone-200 mt-8 overflow-hidden">
             
@@ -42,7 +92,7 @@ export default function RecipeBuilder(){
                             value={recipeName}
                             onChange={(e)=>setRecipeName(e.target.value)}
                             placeholder="Chocolate Cake..."
-                            className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-100 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
+                            className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
                         />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -56,7 +106,7 @@ export default function RecipeBuilder(){
                                 onChange={(e)=>setDiameter(e.target.value)}
                                 placeholder="18"
                                 min="0"
-                                className=" w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-100 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
+                                className=" w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
                                 />
                         </div>
                         <div>
@@ -69,7 +119,7 @@ export default function RecipeBuilder(){
                                 onChange={(e)=>setServings(e.target.value)}
                                 placeholder="8"
                                 min="0"
-                                className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-100 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
+                                className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
                                 />
                         </div>
                     </div>
@@ -105,14 +155,29 @@ export default function RecipeBuilder(){
                                         className="w-full px-3 py-2 text-lg font-bold text-amber-50 placeholder:text-stone-400  bg-black/10 border border-dashed border-stone-400/40 rounded-xl hover:bg-black/20 hover:border-stone-400/70 focus:bg-black/30 focus:border-solid focus:border-amber-100 focus:ring-1 focus:ring-amber-400 focus:outline-none transition-all cursor-text"
                                     />
                                     <button
-                                        className=" ml-3 shrink-0 px-4 py-2 rounded-lg  bg-amber-100 text-red-600 text-xs font-semibold hover:ring-1 hover:ring-red-600 transition-all"
+                                        className=" ml-3 shrink-0 px-4 py-2 rounded-lg  bg-amber-100 text-red-600 text-s font-semibold hover:ring-1 hover:ring-red-600 transition-all"
                                         onClick={() => handleDeleteLayer(layer.id)}
                                     >
                                         Delete
                                     </button>
                                 </div>
                                 <div className="text-sm text-amber-100 ml-1">
-                                    Some ingredients...
+                                    {layer.ingredients.map((ingredient)=>
+                                        <IngredientRow 
+                                        key={ingredient.id} 
+                                        ingredient={ingredient} 
+                                        onUpdate={(field, value) => handleUpdateIngredient(layer.id, ingredient.id, field, value)} 
+                                        onDelete={()=>{handleDeleteIngredient(layer.id,ingredient.id)}}
+                                        />
+                                    )}
+
+                                    <button 
+                                        className="text-sm font-bold text-amber-200 hover:text-amber-100 transition-colors mt-2 flex items-center gap-1"
+                                        onClick={()=>handleAddIngredient(layer.id)}
+                                    >
+                                    + Add ingredient
+                                    </button>
+
                                 </div>
                             </div>)}
                         </div>)
