@@ -1,82 +1,17 @@
-import { useState } from "react"
-import type { RecipeLayer } from '../types/recipe';
 import IngredientRow from '../components/IngredientRow';
+import { useRecipeStore } from '../store/recipeStore';
 
 export default function RecipeBuilder(){
-    const [recipeName, setRecipeName] = useState("");
-    const [diameter, setDiameter] = useState("");
-    const [servings, setServings] = useState("");
-    const [layers, setLayers] = useState<RecipeLayer[]>([]);
 
-    const handleAddLayer = ()=>{
-        setLayers([
-            ...layers, 
-            {
-                id: crypto.randomUUID(),
-                name: "New Layer",
-                ingredients: []
-            }]
-        )
-    }
-    
-    const handleDeleteLayer = (id: string) => {
-        setLayers(layers.filter((layer)=>layer.id!==id))
-    }
-    
-    const handleUpdateLayerName = (id: string, newName: string) => {
-        setLayers(layers.map((layer) => 
-            layer.id === id ? { ...layer, name: newName } : layer
-        ));
-    };
-
-    const handleAddIngredient = (layerId: string)=>{
-        setLayers(layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                        ingredients: [...layer.ingredients, 
-                            {
-                                id: crypto.randomUUID(),
-                                name: "",
-                                quantity: 0,
-                                unit: "g"
-                            }
-                        ] } 
-                : 
-                layer
-        ));
-    }
-    const handleUpdateIngredient = (layerId: string, ingredientId: string, field: string, value: string | number)=>{
-        setLayers(layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                    ingredients: layer.ingredients.map((ingredient)=>
-                            ingredient.id===ingredientId ?
-                               {...ingredient, [field]: value}
-                                :
-                                ingredient
-                        )
-                } 
-                : 
-                layer
-        ));
-    }
-
-    const handleDeleteIngredient = ( layerId: string, ingredientId: string) => {
-        
-        setLayers(layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                    ingredients: layer.ingredients.filter((ingredient)=>
-                            ingredient.id!==ingredientId
-                        )
-                } 
-                : 
-                layer
-        ));
-    }
+    const { 
+        recipeName, setRecipeName, 
+        diameter, setDiameter, 
+        servings, setServings,
+        layers, handleAddLayer, handleDeleteLayer, 
+        handleUpdateLayerName, handleAddIngredient, 
+        handleUpdateIngredient, handleDeleteIngredient 
+    } = useRecipeStore();
+   
 
     return(
         <div className=" max-w-3xl mx-auto bg-amber-200 rounded-3xl shadow-lg border border-stone-200 mt-8 overflow-hidden">
