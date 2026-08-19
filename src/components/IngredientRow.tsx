@@ -1,5 +1,7 @@
 import type { Ingredient } from '../types/recipe';
 import { useRecipeScaler } from '../hooks/useRecipeScaler';
+import { convertQuantity } from '../utils/conversions';
+import type { Unit } from '../types/recipe';
 
 interface IngredientRowProps{
     ingredient: Ingredient;
@@ -46,8 +48,13 @@ export default function IngredientRow({ ingredient, onUpdate, onDelete, viewMode
                 value={ingredient.unit}
                 disabled={viewMode === "scaled"}
                 className="w-20 bg-stone-500 border border-stone-500 rounded-xl px-2 py-2 text-sm text-amber-100 focus:outline-none focus:ring-1 focus:ring-amber-300 transition-colors cursor-pointer"
-                onChange={(e) =>
-                    onUpdate("unit", e.target.value)
+                onChange={(e) =>{
+                        const newUnit = e.target.value as Unit;
+                        const newQuantity = convertQuantity(ingredient.quantity, ingredient.unit, newUnit);
+
+                        onUpdate("unit", newUnit);
+                        onUpdate("quantity", newQuantity);
+                    }
                 }
             >
                 <option value="g">g</option>
