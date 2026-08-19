@@ -7,7 +7,12 @@ export default function RecipeBuilder(){
         recipeName, setRecipeName, 
         diameter, setDiameter, 
         servings, setServings,
-        layers, handleAddLayer, handleDeleteLayer, 
+        layers, 
+        targetDiameter, setTargetDiameter,
+        targetServings,setTargetServings,
+        scaleMode, setScaleMode, 
+        viewMode, setViewMode,
+        handleAddLayer, handleDeleteLayer, 
         handleUpdateLayerName, handleAddIngredient, 
         handleUpdateIngredient, handleDeleteIngredient 
     } = useRecipeStore();
@@ -33,7 +38,7 @@ export default function RecipeBuilder(){
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
-                                Original diameter
+                                Original diameter (cm)
                             </label>
                             <input
                                 type="number"
@@ -46,7 +51,7 @@ export default function RecipeBuilder(){
                         </div>
                         <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
-                                Servings
+                                Original servings
                             </label>
                             <input
                                 type="number"
@@ -57,6 +62,116 @@ export default function RecipeBuilder(){
                                 className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
                                 />
                         </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-stone-500 py-8">
+                    <div>
+                        <h3 className="text-xl font-bold text-stone-800 mb-2">
+                            Scale recipe
+                        </h3>
+
+                        <p className="text-sm text-stone-500 mb-5">
+                            Choose how you want to scale your recipe.
+                        </p>
+
+                        <div className="flex gap-2 mb-5">
+                            <button
+                                onClick={() => setScaleMode("diameter")}
+                                className={`
+                                    px-4 py-2 rounded-lg text-sm font-bold transition-colors
+                                    ${
+                                        scaleMode === "diameter"
+                                            ? "bg-stone-700 text-amber-200"
+                                            : "bg-amber-100 text-stone-600 hover:bg-amber-50"
+                                    }
+                                `}
+                            >
+                                Diameter
+                            </button>
+
+                            <button
+                                onClick={() => setScaleMode("serving")}
+                                className={`
+                                    px-4 py-2 rounded-lg text-sm font-bold transition-colors
+                                    ${
+                                        scaleMode === "serving"
+                                            ? "bg-stone-700 text-amber-200"
+                                            : "bg-amber-100 text-stone-600 hover:bg-amber-50"
+                                    }
+                                `}
+                            >
+                                Servings
+                            </button>
+                        </div>
+
+                        {scaleMode === "diameter" ? (
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                                    Target diameter (cm)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    value={targetDiameter}
+                                    onChange={(e) => setTargetDiameter(e.target.value)}
+                                    placeholder="24"
+                                    min="0"
+                                    className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
+                               />
+                            </div>
+                        ) : (
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                                    Target servings
+                                </label>
+
+                                <input
+                                    type="number"
+                                    value={targetServings}
+                                    onChange={(e) => setTargetServings(e.target.value)}
+                                    placeholder="12"
+                                    min="0"
+                                    className="w-full bg-stone-500 border-2 border-stone-600 rounded-xl px-4 py-3 text-amber-200 placeholder-amber-50/50 focus:ring-2 focus:ring-stone-400 focus:border-amber-200 focus:outline-none transition-colors"
+                               />
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="border-t border-stone-500 pt-6 mb-8">
+                    <p className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">
+                        Recipe view
+                    </p>
+
+                    <div className="flex bg-amber-100 rounded-xl p-1 w-fit">
+                        <button
+                            onClick={() => setViewMode("original")}
+                            className={`
+                                px-4 py-2 rounded-lg text-sm font-bold transition-all
+                                ${
+                                    viewMode === "original"
+                                        ? "bg-stone-700 text-amber-200 shadow-sm"
+                                        : "text-stone-500 hover:text-stone-700"
+                                }
+                            `}
+                        >
+                            Edit original
+                        </button>
+
+                        <button
+                            onClick={() => setViewMode("scaled")}
+                            className={`
+                                px-4 py-2 rounded-lg text-sm font-bold transition-all
+                                ${
+                                    viewMode === "scaled"
+                                        ? "bg-stone-700 text-amber-200 shadow-sm"
+                                        : "text-stone-500 hover:text-stone-700"
+                                }
+                            `}
+                        >
+                            Preview scaled
+                        </button>
                     </div>
                 </div>
 
@@ -85,16 +200,19 @@ export default function RecipeBuilder(){
                                     <input
                                         type="text"
                                         placeholder="E.g. Vanilla Sponge"
+                                        disabled={viewMode === "scaled"}
                                         value={layer.name}
                                         onChange={(e) => handleUpdateLayerName(layer.id, e.target.value)}
                                         className="w-full px-3 py-2 text-lg font-bold text-amber-50 placeholder:text-stone-400  bg-black/10 border border-dashed border-stone-400/40 rounded-xl hover:bg-black/20 hover:border-stone-400/70 focus:bg-black/30 focus:border-solid focus:border-amber-100 focus:ring-1 focus:ring-amber-400 focus:outline-none transition-all cursor-text"
                                     />
-                                    <button
-                                        className=" ml-3 shrink-0 px-4 py-2 rounded-lg  bg-amber-100 text-red-600 text-s font-semibold hover:ring-1 hover:ring-red-600 transition-all"
-                                        onClick={() => handleDeleteLayer(layer.id)}
-                                    >
-                                        Delete
-                                    </button>
+                                    {viewMode === "original" &&  
+                                        (<button
+                                            className=" ml-3 shrink-0 px-4 py-2 rounded-lg  bg-amber-100 text-red-600 text-s font-semibold hover:ring-1 hover:ring-red-600 transition-all"
+                                            onClick={() => handleDeleteLayer(layer.id)}
+                                        >
+                                            Delete
+                                        </button>)
+                                    }
                                 </div>
                                 <div className="text-sm text-amber-100 ml-1">
                                     {layer.ingredients.map((ingredient)=>
@@ -103,26 +221,31 @@ export default function RecipeBuilder(){
                                         ingredient={ingredient} 
                                         onUpdate={(field, value) => handleUpdateIngredient(layer.id, ingredient.id, field, value)} 
                                         onDelete={()=>{handleDeleteIngredient(layer.id,ingredient.id)}}
+                                        viewMode={viewMode}
                                         />
                                     )}
-
-                                    <button 
-                                        className="text-sm font-bold text-amber-200 hover:text-amber-100 transition-colors mt-2 flex items-center gap-1"
-                                        onClick={()=>handleAddIngredient(layer.id)}
-                                    >
-                                    + Add ingredient
-                                    </button>
+                                     {viewMode === "original" &&
+                                       ( <button 
+                                            className="text-sm font-bold text-amber-200 hover:text-amber-100 transition-colors mt-2 flex items-center gap-1"
+                                            onClick={()=>handleAddIngredient(layer.id)}
+                                        >
+                                             + Add ingredient
+                                        </button>)
+                                    }
 
                                 </div>
                             </div>)}
                         </div>)
                     }
-                    <button 
-                        className="w-full bg-stone-600 text-amber-200 hover:bg-stone-700 font-bold py-3 px-6 rounded-xl transition-transform active:scale-[0.99]"
-                        onClick={handleAddLayer}
-                    >
-                    + Add layer
-                    </button>
+                    {viewMode === "original" && 
+                       ( <button 
+                            className="w-full bg-stone-600 text-amber-200 hover:bg-stone-700 font-bold py-3 px-6 rounded-xl transition-transform active:scale-[0.99]"
+                            onClick={handleAddLayer}
+                        >
+                        + Add layer
+                        </button>)
+                    }
+                    
                 </div>
             </div>
 
