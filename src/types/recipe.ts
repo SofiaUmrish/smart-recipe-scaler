@@ -19,4 +19,5 @@ export interface Recipe {
     originalDiameter?: number;
     originalServings?: number;
     layers: RecipeLayer[];
+    createdAt: number;
 }

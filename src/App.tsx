@@ -13,12 +13,14 @@ function App() {
         <div className="min-h-screen bg-stone-700 font-sans">
           <Header />
 
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/recipe/new" element={<RecipeBuilder />} />
-            <Route path="/recipes" element={<Recipes />} />
+          <main className="py-8">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/recipe/new" element={<RecipeBuilder />} />
+              <Route path="/recipes" element={<Recipes />} />
 
-          </Routes>
+            </Routes>
+          </main>
              
         </div>
     </BrowserRouter>

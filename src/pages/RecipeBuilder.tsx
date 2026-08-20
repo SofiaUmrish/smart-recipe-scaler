@@ -14,12 +14,13 @@ export default function RecipeBuilder(){
         viewMode, setViewMode,
         handleAddLayer, handleDeleteLayer, 
         handleUpdateLayerName, handleAddIngredient, 
-        handleUpdateIngredient, handleDeleteIngredient 
+        handleUpdateIngredient, handleDeleteIngredient,
+        saveCurrentRecipe
     } = useRecipeStore();
    
 
     return(
-        <div className=" max-w-3xl mx-auto bg-amber-200 rounded-3xl shadow-lg border border-stone-200 mt-8 overflow-hidden">
+        <div className="max-w-3xl mx-4 md:mx-auto bg-amber-200 rounded-3xl shadow-lg border border-stone-200 overflow-hidden">  
             
             <div className="p-6 sm:p-8">
                 <div className="grid gap-6 mb-8">
@@ -253,6 +254,7 @@ export default function RecipeBuilder(){
                 <button 
                     className="
                         bg-stone-700 hover:bg-stone-800  text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
+                    onClick={saveCurrentRecipe}
                 >
                     Save recipe
                 </button>

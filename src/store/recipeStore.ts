@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { RecipeLayer } from '../types/recipe';
+import { persist } from 'zustand/middleware';
+import type { RecipeLayer, Recipe} from '../types/recipe';
 
 interface RecipeState {
     recipeName: string;
@@ -12,6 +13,10 @@ interface RecipeState {
     scaleMode: "diameter" | "serving";
 
     viewMode: "original" | "scaled";
+
+    savedRecipes: Recipe[];
+    saveCurrentRecipe: () => void;
+
 
     setRecipeName: (name: string) => void;
     setDiameter: (diameter: string) => void;
@@ -30,101 +35,130 @@ interface RecipeState {
     handleUpdateIngredient: (layerId: string, ingredientId: string, field: string, value: string | number) => void;
     handleDeleteIngredient: (layerId: string, ingredientId: string) => void;
 
-
 }
 
-export const useRecipeStore = create<RecipeState>((set) => ({
-    recipeName: "",
-    diameter: "",
-    servings: "",
-    layers: [],
-    targetDiameter: "",
-    targetServings: "",
-    scaleMode: "diameter",
-    viewMode: "original",
+export const useRecipeStore = create<RecipeState>()(persist ((set, get)=>({
 
-    setRecipeName: (name) => set({ recipeName: name }),
-    setDiameter: (diameter) => set({ diameter }),
-    setServings: (servings) => set({ servings }),
+            recipeName: "",
+            diameter: "",
+            servings: "",
+            layers: [],
+            targetDiameter: "",
+            targetServings: "",
+            scaleMode: "diameter",
+            viewMode: "original",
+            savedRecipes: [],
 
-    setTargetDiameter: (targetDiameter) => set({targetDiameter: targetDiameter}),
-    setTargetServings: (targetServings) => set({targetServings: targetServings}),
-    setScaleMode: (scaleMode) => set({scaleMode: scaleMode}),
-    
-    setViewMode: (viewMode) => set({viewMode: viewMode}),
+            setRecipeName: (name) => set({ recipeName: name }),
+            setDiameter: (diameter) => set({ diameter }),
+            setServings: (servings) => set({ servings }),
 
-    handleAddLayer: () => set((state)=>({
-        layers: [
-            ...state.layers, 
-            {
-                id: crypto.randomUUID(),
-                name: "New Layer",
-                ingredients: []
+            setTargetDiameter: (targetDiameter) => set({targetDiameter: targetDiameter}),
+            setTargetServings: (targetServings) => set({targetServings: targetServings}),
+            setScaleMode: (scaleMode) => set({scaleMode: scaleMode}),
+            
+            setViewMode: (viewMode) => set({viewMode: viewMode}),
+
+            handleAddLayer: () => set((state)=>({
+                layers: [
+                    ...state.layers, 
+                    {
+                        id: crypto.randomUUID(),
+                        name: "New Layer",
+                        ingredients: []
+                    }
+                ]
+            })),
+
+            handleDeleteLayer: (id) => set((state)=>({
+                layers: state.layers.filter((layer)=>layer.id!==id)
+            })),
+
+            handleUpdateLayerName: (id, newName) => set((state)=>({
+                layers: state.layers.map((layer) => 
+                    layer.id === id ? { ...layer, name: newName } : layer)
+                    
+            })),
+
+            handleAddIngredient: (layerId) => set((state)=>({
+                
+                layers: state.layers.map((layer) => 
+
+                    layer.id === layerId ? 
+                        { ...layer, 
+                                ingredients: [...layer.ingredients, 
+                                    {
+                                        id: crypto.randomUUID(),
+                                        name: "",
+                                        quantity: 0,
+                                        unit: "g"
+                                    }
+                                ] } 
+                        : 
+                        layer
+                )
+            })),
+
+
+
+            handleUpdateIngredient: (layerId, ingredientId, field, value) => set((state)=>({
+                layers: state.layers.map((layer) => 
+
+                    layer.id === layerId ? 
+                        { ...layer, 
+                            ingredients: layer.ingredients.map((ingredient)=>
+                                    ingredient.id===ingredientId ?
+                                    {...ingredient, [field]: value}
+                                        :
+                                        ingredient
+                                )
+                        } 
+                        : 
+                        layer
+                )
+            })),
+
+            handleDeleteIngredient: (layerId, ingredientId) => set((state)=>({
+                layers: state.layers.map((layer) => 
+
+                    layer.id === layerId ? 
+                        { ...layer, 
+                            ingredients: layer.ingredients.filter((ingredient)=>
+                                    ingredient.id!==ingredientId
+                                )
+                        } 
+                        : 
+                        layer
+                )
+                    
+            })),
+
+            saveCurrentRecipe: () => {
+
+                const state = get();
+
+                const newRecipe = {
+                    id: crypto.randomUUID(),
+                    name: state.recipeName,
+                    originalDiameter: Number(state.diameter),
+                    originalServings: Number(state.servings),
+                    layers:state.layers,
+                    createdAt: Date.now()
+                };
+
+                set({
+                    savedRecipes: [...state.savedRecipes, newRecipe],
+                        recipeName: "",
+                        diameter: "",
+                        servings: "",
+                        layers: []
+                })
             }
-        ]
-    })),
+        }),
 
-    handleDeleteLayer: (id) => set((state)=>({
-        layers: state.layers.filter((layer)=>layer.id!==id)
-    })),
-
-    handleUpdateLayerName: (id, newName) => set((state)=>({
-        layers: state.layers.map((layer) => 
-            layer.id === id ? { ...layer, name: newName } : layer)
-            
-    })),
-
-    handleAddIngredient: (layerId) => set((state)=>({
-        
-        layers: state.layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                        ingredients: [...layer.ingredients, 
-                            {
-                                id: crypto.randomUUID(),
-                                name: "",
-                                quantity: 0,
-                                unit: "g"
-                            }
-                        ] } 
-                : 
-                layer
-        )
-    })),
-
-
-
-    handleUpdateIngredient: (layerId, ingredientId, field, value) => set((state)=>({
-        layers: state.layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                    ingredients: layer.ingredients.map((ingredient)=>
-                            ingredient.id===ingredientId ?
-                               {...ingredient, [field]: value}
-                                :
-                                ingredient
-                        )
-                } 
-                : 
-                layer
-        )
-    })),
-
-    handleDeleteIngredient: (layerId, ingredientId) => set((state)=>({
-        layers: state.layers.map((layer) => 
-
-            layer.id === layerId ? 
-                { ...layer, 
-                    ingredients: layer.ingredients.filter((ingredient)=>
-                            ingredient.id!==ingredientId
-                        )
-                } 
-                : 
-                layer
-        )
-            
-    })),
-
-}))
+        {
+            name: "smart-recipe-storage",
+            partialize: (state) => ({ savedRecipes: state.savedRecipes}),
+        }
+    )
+)
