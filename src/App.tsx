@@ -1,15 +1,28 @@
 import RecipeBuilder from './pages/RecipeBuilder';
+import Home from './pages/Home';
+import Recipes from './pages/Recipes';
+
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
+
+import Header from './components/Header';
+
 
 function App() {
   return (
-    <div className="min-h-screen bg-stone-700 py-8 px-4 font-sans">
-      <header className="text-center">
-        <h1 className="text-4xl font-black text-amber-200">Smart Recipe Scaler 🍰</h1>
-        <p className="text-amber-100 mt-2 font-medium">Scale your recipes effortlessly.</p>
-      </header>
-      
-      <RecipeBuilder />
-    </div>
+    <BrowserRouter>
+        <div className="min-h-screen bg-stone-700 font-sans">
+          <Header />
+
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/recipe/new" element={<RecipeBuilder />} />
+            <Route path="/recipes" element={<Recipes />} />
+
+          </Routes>
+             
+        </div>
+    </BrowserRouter>
+    
   );
 }
 
