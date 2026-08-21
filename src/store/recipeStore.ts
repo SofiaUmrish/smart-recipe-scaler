@@ -190,8 +190,8 @@ export const useRecipeStore = create<RecipeState>()(persist ((set, get)=>({
             loadRecipe: (recipe) => set({
                 currentRecipeId: recipe.id,
                 recipeName: recipe.name,
-                diameter: recipe.originalDiameter?.toString() || "",
-                servings: recipe.originalServings?.toString() || "",
+                diameter: recipe.originalDiameter ? recipe.originalDiameter.toString() : "",
+                servings: recipe.originalServings ? recipe.originalServings.toString() : "",
                 layers: recipe.layers,
                 viewMode: "original",
                 scaleMode: "diameter"

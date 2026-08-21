@@ -1,7 +1,12 @@
 import IngredientRow from '../components/IngredientRow';
+import NutritionCalculator from '../components/NutritionCalculator';
 import { useRecipeStore } from '../store/recipeStore';
+import { useState } from 'react';
 
 export default function RecipeBuilder(){
+
+    const [error, setError] = useState("");
+    const [activeView, setActiveView] = useState<"builder" | "nutrition">("builder");
 
     const { 
         currentRecipeId,
@@ -18,7 +23,44 @@ export default function RecipeBuilder(){
         handleUpdateIngredient, handleDeleteIngredient,
         saveCurrentRecipe
     } = useRecipeStore();
+
+    const handleSave = () => {
+        if(!recipeName.trim()){
+            setError("Please enter a recipe name.");
+            return;
+        }
+
+        if (!diameter && !servings) {
+            setError("Please specify the original diameter or servings.");
+            return;
+        }
+
+        setError("")
+        saveCurrentRecipe();
+    }
+
+    const handleCalculateNutrition = () => {
+
+        const hasValidIngredients = layers.some((layer)=>{
+            return layer.ingredients.some(ingredient=>ingredient.name.trim()!=="" && Number(ingredient.quantity)>0)
+        })
+
+        if(!hasValidIngredients){
+            setError("Add at least one ingredient to calculate nutrition.")
+            return
+        }
+        setError("");
+        setActiveView("nutrition");
+    }
    
+    if(activeView==="nutrition"){
+        return(
+            <NutritionCalculator 
+            layers={layers} 
+            servings={servings || targetServings}
+            onBack={()=>setActiveView("builder")} />
+        )
+    }
 
     return(
         <div className="max-w-3xl mx-4 md:mx-auto bg-amber-200 rounded-3xl shadow-lg border border-stone-200 overflow-hidden">  
@@ -251,14 +293,30 @@ export default function RecipeBuilder(){
                 </div>
             </div>
 
-            <div className="flex justify-center mb-6 border-t border-stone-500 pt-6">
-                <button 
-                    className="
-                        bg-stone-700 hover:bg-stone-800  text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
-                    onClick={saveCurrentRecipe}
-                >
-                   { currentRecipeId ? "Update recipe" : "Save recipe"}
-                </button>
+            <div className="flex flex-col items-center justify-center mb-6 border-t border-stone-500 pt-6">
+
+                {error && (
+                    <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-bold text-center">
+                        {error}
+                    </div>
+                )}
+                <div className="flex flex-row gap-5 ">
+                    <button 
+                        className="
+                            bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
+                        onClick={handleSave}
+                    >
+                    { currentRecipeId ? "Update recipe" : "Save recipe"}
+                    </button>
+
+                    <button 
+                        onClick={handleCalculateNutrition}
+                        className="
+                            bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
+                        >
+                        Calculate Nutrition
+                    </button>
+                </div>
             </div>
         </div>
     )
