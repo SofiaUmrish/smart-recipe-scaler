@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware';
 import type { RecipeLayer, Recipe} from '../types/recipe';
 
 interface RecipeState {
+
+    currentRecipeId: string | null;
     recipeName: string;
     diameter: string;
     servings: string;
@@ -15,8 +17,11 @@ interface RecipeState {
     viewMode: "original" | "scaled";
 
     savedRecipes: Recipe[];
-    saveCurrentRecipe: () => void;
 
+    saveCurrentRecipe: () => void;
+    loadRecipe: (recipe: Recipe) => void;
+    deleteRecipe: (id: string) => void;
+    resetForm: () => void;
 
     setRecipeName: (name: string) => void;
     setDiameter: (diameter: string) => void;
@@ -38,7 +43,8 @@ interface RecipeState {
 }
 
 export const useRecipeStore = create<RecipeState>()(persist ((set, get)=>({
-
+    
+            currentRecipeId: null,
             recipeName: "",
             diameter: "",
             servings: "",
@@ -137,28 +143,82 @@ export const useRecipeStore = create<RecipeState>()(persist ((set, get)=>({
 
                 const state = get();
 
-                const newRecipe = {
-                    id: crypto.randomUUID(),
-                    name: state.recipeName,
-                    originalDiameter: Number(state.diameter),
-                    originalServings: Number(state.servings),
-                    layers:state.layers,
-                    createdAt: Date.now()
-                };
+                if(state.currentRecipeId){
+                    set({
+                        savedRecipes: state.savedRecipes.map((recipe)=>
+                            recipe.id===state.currentRecipeId ? 
+                            {
+                                ...recipe,
+                                name: state.recipeName,
+                                originalDiameter: Number(state.diameter),
+                                originalServings: Number(state.servings),
+                                layers: state.layers
+                            }
+                            :
+                            recipe
+                        ),
 
-                set({
-                    savedRecipes: [...state.savedRecipes, newRecipe],
+                        currentRecipeId: null,
                         recipeName: "",
                         diameter: "",
                         servings: "",
                         layers: []
-                })
-            }
-        }),
+                    })
+                }else {
+                    const newRecipe = {
+                        id: crypto.randomUUID(),
+                        name: state.recipeName,
+                        originalDiameter: Number(state.diameter),
+                        originalServings: Number(state.servings),
+                        layers: state.layers,
+                        createdAt: Date.now()
+                    };
+            
+                    set({
+                        savedRecipes: [...state.savedRecipes, newRecipe],
+                        
+                        currentRecipeId: null,
+                        recipeName: "",
+                        diameter: "",
+                        servings: "",
+                        layers: []
+                    });
+                }
 
-        {
-            name: "smart-recipe-storage",
-            partialize: (state) => ({ savedRecipes: state.savedRecipes}),
-        }
-    )
-)
+            },
+
+            loadRecipe: (recipe) => set({
+                currentRecipeId: recipe.id,
+                recipeName: recipe.name,
+                diameter: recipe.originalDiameter?.toString() || "",
+                servings: recipe.originalServings?.toString() || "",
+                layers: recipe.layers,
+                viewMode: "original",
+                scaleMode: "diameter"
+            }),
+            
+            deleteRecipe: (id) => set((state) => ({
+                savedRecipes: state.savedRecipes.filter(
+                    (recipe) => recipe.id !== id
+                )
+            })),
+
+            resetForm: () => set({
+                currentRecipeId: null,
+                recipeName: "",
+                diameter: "",
+                servings: "",
+                layers: [],
+                viewMode: "original",
+                scaleMode: "diameter"
+            }),
+            
+            }),
+
+    {
+        name: "smart-recipe-storage",
+        partialize: (state) => ({
+            savedRecipes: state.savedRecipes
+        }),
+    }
+))

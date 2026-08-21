@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom';
+import { useRecipeStore } from '../store/recipeStore';
 
 export default function Header() {
     const baseLinkClasses = "rounded-xl py-2 px-4 transition-colors";
+    const resetForm = useRecipeStore((state) => state.resetForm);
 
     return (
         <header className="bg-stone-600">
@@ -38,6 +40,7 @@ export default function Header() {
 
                     <NavLink 
                         to="/recipes" 
+                        onClick={resetForm}
                         className={({ isActive }) => 
                             `${baseLinkClasses} ${isActive 
                                 ? "bg-amber-200 text-stone-700 " 

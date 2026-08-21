@@ -4,6 +4,7 @@ import { useRecipeStore } from '../store/recipeStore';
 export default function RecipeBuilder(){
 
     const { 
+        currentRecipeId,
         recipeName, setRecipeName, 
         diameter, setDiameter, 
         servings, setServings,
@@ -256,7 +257,7 @@ export default function RecipeBuilder(){
                         bg-stone-700 hover:bg-stone-800  text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
                     onClick={saveCurrentRecipe}
                 >
-                    Save recipe
+                   { currentRecipeId ? "Update recipe" : "Save recipe"}
                 </button>
             </div>
         </div>
