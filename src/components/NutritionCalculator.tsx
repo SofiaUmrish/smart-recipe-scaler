@@ -100,6 +100,7 @@ export default function NutritionCalculator({layers, servings, onBack }: Nutriti
     return(
         <div className="max-w-4xl mx-4 md:mx-auto bg-stone-600 rounded-3xl p-6 sm:p-8 border border-stone-500 shadow-xl">
             <button 
+                aria-hidden="true"
                 onClick={onBack}
                 className="mb-6 px-4 py-2 bg-stone-700 hover:bg-stone-800 text-stone-300 hover:text-amber-200 rounded-xl text-sm font-bold transition-colors inline-flex items-center gap-2"
             >
@@ -114,13 +115,13 @@ export default function NutritionCalculator({layers, servings, onBack }: Nutriti
             </div>
 
             {isLoading && (
-                <div className="flex flex-col items-center justify-center py-10 animate-pulse">
+                <div aria-live="polite" className="flex flex-col items-center justify-center py-10 animate-pulse">
                     <p className="text-amber-200 font-bold">Calculating macros...</p>
                 </div>
             )}
 
             {error && !isLoading && (
-                <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center">
+                <div role="alert" className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center">
                     <p className="text-red-400 font-bold mb-4">{error}</p>
                     <button 
                         onClick={fetchNutrition}

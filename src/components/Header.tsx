@@ -11,11 +11,11 @@ export default function Header() {
             <div className="max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4 p-5 lg:px-8">
                 
                 <div className="flex flex-col items-center lg:items-start gap-2 text-center">
-                    <h1 className="text-3xl font-black text-amber-200">Smart Recipe Scaler 🍰</h1>
+                    <h1 className="text-3xl font-black text-amber-200">Smart Recipe Scaler <span aria-hidden="true">🍰</span></h1>
                     <p className="text-amber-100 text-sm">Scale your recipes effortlessly.</p>
                 </div>
 
-                <nav className="flex flex-wrap justify-center items-center gap-3 md:gap-8 font-bold text-amber-200">
+                <nav aria-label="Main navigation" className="flex flex-wrap justify-center items-center gap-3 md:gap-8 font-bold text-amber-200">
                     <NavLink 
                         to="/" 
                         className={({ isActive }) => 

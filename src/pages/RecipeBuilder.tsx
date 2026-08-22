@@ -68,10 +68,11 @@ export default function RecipeBuilder(){
             <div className="p-6 sm:p-8">
                 <div className="grid gap-6 mb-8">
                     <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                        <label htmlFor="recipe-name" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                             Recipe name
                         </label>
                         <input
+                            id="recipe-name"
                             type="text"
                             value={recipeName}
                             onChange={(e)=>setRecipeName(e.target.value)}
@@ -81,10 +82,11 @@ export default function RecipeBuilder(){
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                            <label htmlFor="original-diameter" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                                 Original diameter (cm)
                             </label>
                             <input
+                                id="original-diameter"
                                 type="number"
                                 value={diameter}
                                 onChange={(e)=>setDiameter(e.target.value)}
@@ -94,10 +96,11 @@ export default function RecipeBuilder(){
                                 />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                            <label htmlFor="original-servings" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                                 Original servings
                             </label>
                             <input
+                                id="original-servings"
                                 type="number"
                                 value={servings}
                                 onChange={(e)=>setServings(e.target.value)}
@@ -122,6 +125,7 @@ export default function RecipeBuilder(){
                         <div className="flex gap-2 mb-5">
                             <button
                                 onClick={() => setScaleMode("diameter")}
+                                aria-pressed={scaleMode === "diameter"}
                                 className={`
                                     px-4 py-2 rounded-lg text-sm font-bold transition-colors
                                     ${
@@ -136,6 +140,7 @@ export default function RecipeBuilder(){
 
                             <button
                                 onClick={() => setScaleMode("serving")}
+                                aria-pressed={scaleMode === "serving"}
                                 className={`
                                     px-4 py-2 rounded-lg text-sm font-bold transition-colors
                                     ${
@@ -151,11 +156,12 @@ export default function RecipeBuilder(){
 
                         {scaleMode === "diameter" ? (
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                                <label htmlFor="target-diameter" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                                     Target diameter (cm)
                                 </label>
 
                                 <input
+                                    id="target-diameter"
                                     type="number"
                                     value={targetDiameter}
                                     onChange={(e) => setTargetDiameter(e.target.value)}
@@ -166,11 +172,12 @@ export default function RecipeBuilder(){
                             </div>
                         ) : (
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+                                <label htmlFor="target-servings" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                                     Target servings
                                 </label>
 
                                 <input
+                                    id="target-servings"
                                     type="number"
                                     value={targetServings}
                                     onChange={(e) => setTargetServings(e.target.value)}
@@ -191,6 +198,7 @@ export default function RecipeBuilder(){
                     <div className="flex bg-amber-100 rounded-xl p-1 w-fit">
                         <button
                             onClick={() => setViewMode("original")}
+                            aria-pressed={viewMode === "original"}
                             className={`
                                 px-4 py-2 rounded-lg text-sm font-bold transition-all
                                 ${
@@ -205,6 +213,7 @@ export default function RecipeBuilder(){
 
                         <button
                             onClick={() => setViewMode("scaled")}
+                            aria-pressed={viewMode === "scaled"}
                             className={`
                                 px-4 py-2 rounded-lg text-sm font-bold transition-all
                                 ${
@@ -242,6 +251,7 @@ export default function RecipeBuilder(){
                             className="group border-2 border-stone-600 rounded-2xl p-5 bg-stone-600 hover:bg-stone-600/90 hover:shadow-sm transition-all">
                                 <div className="flex justify-between items-center mb-4">
                                     <input
+                                        aria-label="Layer name"
                                         type="text"
                                         placeholder="E.g. Vanilla Sponge"
                                         disabled={viewMode === "scaled"}
@@ -252,6 +262,7 @@ export default function RecipeBuilder(){
                                     {viewMode === "original" &&  
                                         (<button
                                             className=" ml-3 shrink-0 px-4 py-2 rounded-lg  bg-amber-100 text-red-600 text-s font-semibold hover:ring-1 hover:ring-red-600 transition-all"
+                                            aria-label={`Delete layer ${layer.name}`}
                                             onClick={() => handleDeleteLayer(layer.id)}
                                         >
                                             Delete
@@ -296,7 +307,7 @@ export default function RecipeBuilder(){
             <div className="flex flex-col items-center justify-center mb-6 border-t border-stone-500 pt-6">
 
                 {error && (
-                    <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-bold text-center">
+                    <div role="alert" className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-bold text-center">
                         {error}
                     </div>
                 )}

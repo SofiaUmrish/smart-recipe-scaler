@@ -24,6 +24,7 @@ export default function IngredientRow({ ingredient, onUpdate, onDelete, viewMode
         <div className="flex flex-wrap sm:flex-nowrap gap-2 sm:gap-3 items-center mb-3">
 
             <input type="text" 
+                aria-label="Ingredient name"
                 value={ingredient.name}
                 placeholder="E.g. Sugar"
                 disabled={viewMode === "scaled"}
@@ -34,6 +35,7 @@ export default function IngredientRow({ ingredient, onUpdate, onDelete, viewMode
             />
 
             <input type="number" 
+                aria-label="Ingredient quantity"
                 value={displayQuantity || ""}
                 placeholder="100"
                 disabled={viewMode === "scaled"}
@@ -45,6 +47,7 @@ export default function IngredientRow({ ingredient, onUpdate, onDelete, viewMode
            />
 
             <select 
+                aria-label="Measurement unit"
                 value={ingredient.unit}
                 disabled={viewMode === "scaled"}
                 className="w-20 bg-stone-500 border border-stone-500 rounded-xl px-2 py-2 text-sm text-amber-100 focus:outline-none focus:ring-1 focus:ring-amber-300 transition-colors cursor-pointer"
@@ -67,11 +70,12 @@ export default function IngredientRow({ ingredient, onUpdate, onDelete, viewMode
             </select>
             {viewMode === "original" && 
                 (<button 
+                    aria-label="Delete ingredient"
                     className="text-amber-100 rounded-md hover:bg-amber-100 hover:text-red-500 transition-colors font-bold text-xl px-2 py-1"
                     title="Delete ingredient"
                     onClick={onDelete}
                 >
-                    ✘
+                    <span aria-hidden="true">✘</span>
                 </button>)
             }
 

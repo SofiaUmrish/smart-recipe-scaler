@@ -46,7 +46,7 @@ export default function Recipes() {
                         className="inline-block bg-amber-200 hover:bg-amber-300 text-stone-800 font-bold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg"
                     >
                         + Create Recipe
-                    </Link>
+                    </Link> 
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -54,8 +54,11 @@ export default function Recipes() {
                         return (
                             <div 
                                 key={recipe.id}
+                                role="button"
+                                tabIndex={0}
                                 className="bg-stone-600 rounded-2xl p-6 border border-stone-500 hover:border-amber-200/50 hover:shadow-lg transition-all group cursor-pointer flex flex-col h-full"
                                 onClick={() => handleOpenRecipe(recipe)}
+                                onKeyDown={(e)=>{e.key==="Enter"&&handleOpenRecipe(recipe)}}
                             >
                                 <h3 className="text-xl font-bold text-amber-200 mb-4 group-hover:text-amber-100 transition-colors line-clamp-2">
                                     Name: {recipe.name}
@@ -81,6 +84,7 @@ export default function Recipes() {
                                     </div>
                                     <button 
                                         onClick={(e) => handleDeleteClick(e, recipe)}
+                                        aria-label={`Delete recipe ${recipe.name}`}
                                         className="px-3 py-1.5 rounded-lg font-bold text-stone-400 hover:text-red-300 hover:bg-red-500/20 transition-colors"
                                     >
                                         Delete
@@ -94,28 +98,32 @@ export default function Recipes() {
 
             {/* modal window for deletion */}
             {recipeToDelete && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-stone-700 border border-stone-500 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl">
-                        <h3 className="text-2xl font-black text-amber-200 mb-2">Delete Recipe?</h3>
-                        <p className="text-stone-300 mb-8">
-                            Are you sure you want to delete <span className="font-bold text-amber-100">"{recipeToDelete.name}"</span>? This action cannot be undone.
-                        </p>
-                        
-                        <div className="flex justify-end gap-3">
-                            <button
-                                onClick={() => setRecipeToDelete(null)}
-                                className="px-5 py-2.5 rounded-xl font-bold text-stone-300 hover:bg-stone-600 transition-colors"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={confirmDelete}
-                                className="px-5 py-2.5 rounded-xl font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg transition-colors active:scale-95"
-                            >
-                                Yes, delete
-                            </button>
+                <div
+                    role="dialog" 
+                    aria-modal="true" 
+                    aria-labelledby="delete-dialog-title"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                        <div className="bg-stone-700 border border-stone-500 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl">
+                            <h3 id="delete-dialog-title" className="text-2xl font-black text-amber-200 mb-2">Delete Recipe?</h3>
+                            <p className="text-stone-300 mb-8">
+                                Are you sure you want to delete <span className="font-bold text-amber-100">"{recipeToDelete.name}"</span>? This action cannot be undone.
+                            </p>
+                            
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    onClick={() => setRecipeToDelete(null)}
+                                    className="px-5 py-2.5 rounded-xl font-bold text-stone-300 hover:bg-stone-600 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    className="px-5 py-2.5 rounded-xl font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg transition-colors active:scale-95"
+                                >
+                                    Yes, delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
                 </div>
             )}
         </div>
