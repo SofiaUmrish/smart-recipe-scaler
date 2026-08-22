@@ -57,7 +57,7 @@ export default function NutritionCalculator({layers, servings, onBack }: Nutriti
             let totalSatFat = 0;
             let totalCholesterol = 0;
 
-            data.items.forEach((item)=>{
+            data.items.forEach((item: any)=>{
                 totalCalories += item.calories;
                 totalProtein += item.protein_g;
                 totalFat += item.fat_total_g;

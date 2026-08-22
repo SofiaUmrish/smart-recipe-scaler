@@ -26,8 +26,8 @@ export const convertQuantity = (quantity: number, fromUnit: Unit, toUnit: Unit) 
     if(fromUnit===toUnit || !canConvert(fromUnit, toUnit)){
         return 0
     }
-    const fromConversionRate = conversionRates[fromUnit];
-    const toConversionRate = conversionRates[toUnit];
+    const fromConversionRate = conversionRates[fromUnit] as number;
+    const toConversionRate = conversionRates[toUnit] as number;
 
     return (quantity * fromConversionRate) / toConversionRate
 
