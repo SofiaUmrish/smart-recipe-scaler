@@ -1,75 +1,212 @@
-# React + TypeScript + Vite
+# 🍰 Smart Recipe Scaler
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application for creating, managing, and automatically scaling cake and dessert recipes.
 
-Currently, two official plugins are available:
+Smart Recipe Scaler allows users to organize recipes into layers, add ingredients, scale quantities based on cake diameter or number of servings, save recipes locally, and calculate estimated nutrition information.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Demo
 
-## React Compiler
+URL: https://smart-recipe-scaler.vercel.app 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Create and edit recipes
+- Add and delete recipe layers
+- Rename recipe layers
+- Add, edit, and remove ingredients
+- Scale ingredient quantities by cake diameter
+- Scale recipes by the number of servings
+- Switch between the original and scaled recipe view
+- Calculate the scaling factor automatically
+- Save recipes locally
+- Open and edit saved recipes
+- Update existing recipes
+- Delete saved recipes
+- Calculate estimated nutrition information
+- Display calories and macronutrients for the entire recipe
+- Display calories per serving
+- Handle loading and error states during nutrition calculations
+- Validate required recipe fields
+- Responsive design for desktop and mobile devices
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Recipe Scaling
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Scale by diameter
 
+When scaling a cake by diameter, the application calculates the scaling factor based on the area of the cake.
+
+```text
+scaleFactor = targetDiameter² / originalDiameter²
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+For example:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```text
+Original diameter: 18 cm
+Target diameter: 24 cm
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+scaleFactor = 24² / 18²
 ```
+
+Each ingredient quantity is multiplied by the calculated scaling factor.
+
+---
+
+### Scale by servings
+
+When scaling by servings:
+
+```text
+scaleFactor = targetServings / originalServings
+```
+
+For example:
+
+```text
+Original servings: 8
+Target servings: 12
+
+scaleFactor = 12 / 8 = 1.5
+```
+
+Each ingredient quantity is multiplied by the scaling factor.
+
+---
+
+## Nutrition Calculation
+
+The application can calculate estimated nutrition information based on the ingredients in a recipe.
+
+The nutrition view displays:
+
+- Calories
+- Protein
+- Fat
+- Carbohydrates
+- Sugar
+- Fiber
+- Saturated fat
+- Cholesterol
+
+The application also calculates calories per serving when the number of servings is provided.
+
+---
+
+## Recipe Management
+
+Recipes can be saved and managed directly in the application.
+
+Users can:
+
+- Save a new recipe
+- View saved recipes
+- Open an existing recipe
+- Edit a recipe
+- Update an existing recipe
+- Delete a recipe
+
+Saved recipes are persisted in the browser using `localStorage`.
+
+---
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Zustand
+- Zustand Persist
+- React Router
+- Vitest
+- REST API
+- localStorage
+- Vercel
+
+---
+
+## Testing
+
+The project includes tests for the recipe scaling logic using Vitest.
+
+The scaling functionality is tested for:
+
+- Scaling recipes by diameter
+- Scaling recipes by servings
+- Different scaling factors
+
+Run the tests with:
+
+```bash
+npm run test
+```
+
+---
+
+## Responsive Design
+
+The interface is designed to work across different screen sizes:
+
+- Desktop
+- Tablet
+- Mobile
+
+Tailwind CSS is used for responsive layouts and styling.
+
+---
+
+## Screenshots
+
+### Recipe Builder
+
+![Recipe Builder](./screenshots/addRecipe.png)
+![Recipe Builder](./screenshots/addRecipe2.png)
+
+### Saved Recipes
+
+![Saved Recipes](./screenshots/savedRecipes.png)
+
+### Nutrition Calculator
+
+![Nutrition Calculator](./screenshots/nutrition.png)
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/SofiaUmrish/smart-recipe-scaler.git
+```
+
+Navigate to the project folder:
+
+```bash
+cd smart-recipe-scaler
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the application in your browser.
+
+---
+
+
+## Author
+
+Created by **Sofia Umrish**

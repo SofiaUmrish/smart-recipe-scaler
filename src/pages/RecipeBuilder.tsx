@@ -304,27 +304,28 @@ export default function RecipeBuilder(){
                 </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center mb-6 border-t border-stone-500 pt-6">
+            <div className="flex flex-col items-center justify-center mb-6 border-t border-stone-500 pt-6 px-6 sm:px-8">
 
                 {error && (
-                    <div role="alert" className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-bold text-center">
+                    <div role="alert" className="mb-4 w-full px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-bold text-center">
                         {error}
                     </div>
                 )}
-                <div className="flex flex-row gap-5 ">
+                
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
                     <button 
                         className="
-                            bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
+                            w-full bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-6 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
                         onClick={handleSave}
                     >
-                    { currentRecipeId ? "Update recipe" : "Save recipe"}
+                        { currentRecipeId ? "Update recipe" : "Save recipe"}
                     </button>
 
                     <button 
                         onClick={handleCalculateNutrition}
                         className="
-                            bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-10 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
-                        >
+                            w-full bg-stone-700 hover:bg-stone-800 text-amber-200 font-bold tracking-wide py-3 px-6 rounded-xl shadow-lg shadow-stone-900/20 transition-all active:scale-[0.98]"
+                    >
                         Calculate Nutrition
                     </button>
                 </div>
